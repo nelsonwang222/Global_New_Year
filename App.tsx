@@ -19,9 +19,17 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkKey = async () => {
+      // Check if env var is present (for deployed apps)
+      if (process.env.API_KEY) {
+        setHasApiKey(true);
+        return;
+      }
+
       // Cast window to any to access aistudio which is injected by the platform
-      const selected = await (window as any).aistudio.hasSelectedApiKey();
-      setHasApiKey(selected);
+      if ((window as any).aistudio) {
+        const selected = await (window as any).aistudio.hasSelectedApiKey();
+        setHasApiKey(selected);
+      }
     };
     checkKey();
   }, []);
@@ -97,15 +105,15 @@ const App: React.FC = () => {
           <p className="text-slate-600 mb-8">
             This high-quality image generator uses Gemini 3 Pro. To continue, please select a paid API key from your Google Cloud project.
           </p>
-          <button 
+          <button
             onClick={handleSelectKey}
             className="w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg instagram-gradient hover:opacity-90 transition-all mb-4"
           >
             Select API Key
           </button>
-          <a 
-            href="https://ai.google.dev/gemini-api/docs/billing" 
-            target="_blank" 
+          <a
+            href="https://ai.google.dev/gemini-api/docs/billing"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-blue-500 hover:underline"
           >
@@ -123,10 +131,10 @@ const App: React.FC = () => {
           Powered by Gemini 3 Pro
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
-          Global <span className="text-transparent bg-clip-text instagram-gradient">New Year</span> 
+          Global <span className="text-transparent bg-clip-text instagram-gradient">New Year</span>
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-          Create premium Instagram templates with the message "Wishing you a happy new year" 
+          Create premium Instagram templates with the message "Wishing you a happy new year"
           in any of the world's top 100+ languages.
         </p>
       </header>
@@ -137,7 +145,7 @@ const App: React.FC = () => {
           <section className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">1. Choose Language</label>
-              <select 
+              <select
                 value={selectedLang}
                 onChange={(e) => setSelectedLang(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
@@ -152,8 +160,8 @@ const App: React.FC = () => {
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">2. Where are you located?</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="City or Country (e.g., Hong Kong, Taipei, London)"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -163,7 +171,7 @@ const App: React.FC = () => {
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">3. Cultural Symbols (Optional)</label>
-              <textarea 
+              <textarea
                 placeholder="Mention specific elements like 'Red envelopes', 'Orchid flowers', or 'Lanterns'..."
                 value={culturalInfo}
                 onChange={(e) => setCulturalInfo(e.target.value)}
@@ -180,7 +188,7 @@ const App: React.FC = () => {
               </div>
             )}
 
-            <button 
+            <button
               onClick={handleGenerate}
               disabled={isLoading}
               className="w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg instagram-gradient hover:opacity-90 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -203,14 +211,14 @@ const App: React.FC = () => {
                 <span className="mr-2">✨</span> Refine with Pro AI
               </h3>
               <div className="flex flex-col gap-3">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder='e.g. "Add more gold accents", "Change font style"...'
                   value={editPrompt}
                   onChange={(e) => setEditPrompt(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                 />
-                <button 
+                <button
                   onClick={handleEdit}
                   disabled={isEditing || !editPrompt}
                   className="w-full py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-all disabled:opacity-50"
@@ -227,19 +235,19 @@ const App: React.FC = () => {
           <div className="w-full max-w-[450px] aspect-square bg-white rounded-2xl shadow-2xl overflow-hidden relative group border border-slate-100">
             {generatedImage ? (
               <>
-                <img 
-                  src={`data:image/png;base64,${generatedImage}`} 
-                  alt="New Year Template" 
+                <img
+                  src={`data:image/png;base64,${generatedImage}`}
+                  alt="New Year Template"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                   <a 
+                  <a
                     href={`data:image/png;base64,${generatedImage}`}
                     download="new-year-wish.png"
                     className="px-8 py-3 bg-white text-slate-900 font-bold rounded-full shadow-lg hover:scale-105 transition-transform"
-                   >
-                     Download Post
-                   </a>
+                  >
+                    Download Post
+                  </a>
                 </div>
               </>
             ) : (
@@ -253,7 +261,7 @@ const App: React.FC = () => {
                 <p className="text-sm mt-2 text-slate-400">Experience superior quality with Gemini 3 Pro.</p>
               </div>
             )}
-            
+
             {isLoading && (
               <div className="absolute inset-0 bg-white/90 backdrop-blur-md flex items-center justify-center z-10">
                 <div className="text-center">
@@ -273,7 +281,7 @@ const App: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           <div className="mt-8 grid grid-cols-3 gap-8 w-full max-w-[450px]">
             <div className="text-center">
               <span className="block text-2xl font-bold text-slate-800">3.0</span>
@@ -290,13 +298,13 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <footer className="mt-20 py-10 border-t border-slate-100 text-center">
         <p className="text-slate-400 text-sm">&copy; {new Date().getFullYear()} Global New Year Post Generator.</p>
         <div className="mt-4">
-          <a 
-            href="https://ai.google.dev/gemini-api/docs/billing" 
-            target="_blank" 
+          <a
+            href="https://ai.google.dev/gemini-api/docs/billing"
+            target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] uppercase tracking-widest font-bold text-slate-400 hover:text-slate-600"
           >
