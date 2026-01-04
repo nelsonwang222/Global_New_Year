@@ -16,7 +16,6 @@ A React application for generating Global New Year Instagram templates, powered 
    npm install
    ```
 
-
 ### Development
 
 To start the development server:
